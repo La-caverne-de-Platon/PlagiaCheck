@@ -1,24 +1,52 @@
 # PlagiaCheck
-Comment utiliser les nouveaux Crawler spécialisés pour les LLM pour détecter le plagiat ?
+Un script python qui permet de détecter le plagiat en utilisant Google et la détection d'I.A. via ZeroGPT !
 
-# Vérification statique sur Google
+## L'utiliser localement
 
-![](https://i.imgur.com/gHve3yV.png)
+```bash
+python api.py "Être heureux : Bonheur signifie bon heur, heur étant dérivé du latin augurium, qui signifie « augure, « chance ». C’est quelque chose qui nous échoit, qui ne dépend pas de nous. La définition académique du bonheur est « aspiration commune à tous, état durable de satisfaction et de plénitude ». Bon, dans bonheur suggère l’idée d’un bien. Mais s’agit-il de l’agréable ou du bien moral ?"
+```
 
-## Markdowner
+résultat : 
 
-Github m'a recommandé le repo ["Markdowner"](https://md.dhr.wtf/), un crawler de données spécialisé dans les LLM. Après quelques usages j'ai vu qu'il pouvait crawl les résultats Google sans problème. Or normalement c'est impossible sans passer directement par Google et payer quelques euros pour pouvoir utiliser la fontionnalité de recherche...
+```bash
+{"google": "https://www.studocu.com/fr/document/ecole-internationale-bilingue-section-etoile/philosophie/sequence-2-la-liberte-conduit-elle-au-bonheur/90421849", "IA": 0}
+```
 
-## Taux de similarité
+## L'utiliser via l'API
 
-Le script python en exemple prend une [phrase comme argument ici](https://github.com/La-caverne-de-Platon/PlagiaCheck/blob/3cf757d7ed538d00a603c8c4c07bb5de95b3396c/exemple.py#L40) et l'envoie à Google via Markdowner. Ensuite pour chaque ligne dans la réponse, j'utilise [difflib](https://docs.python.org/3/library/difflib.html) qui s'occupe de calculer les déltas et de me donner une valeur de similarité.
+Pour faciliter tout le monde j'héberge le fichier python sur mon VPS derrière mon site à cette addresse : [https://lacavernedeplaton.fr/api/science.php](https://lacavernedeplaton.fr/api/science.php)
 
-# Vérification dynamique via ZeroGPT
-![](https://i.imgur.com/rJLXlIo.png)
+## Documentation de l'API 
 
-Le script python utilise [NoDriver](https://github.com/UltrafunkAmsterdam/nodriver) pour pouvoir afficher la page de ZeroGPT et automatiser les tâches d'appuyer sur le bouton, écrire le texte, récupérer le % affiché.
+### Envoyer des données
+Pour envoyer des données textuelles pour vérification de plagiat, vous pouvez effectuer une requête POST vers le point d'accès `/science.php` avec les données textuelles dans le paramètre `p`.
 
+```bash
+curl -X POST https://lacavernedeplaton.fr/api/science.php -d 'p=Lorem%20ipsum%20dolor%20sit%20amet'
+```
 
-# TODO 
+Résultat : 
 
-- [ ] En faire une API via Sreamlit ou ce genre de chose ?
+```bash
+456
+```
+
+### Récupérer les résultats
+Une fois que les données sont soumises avec succès, vous recevrez un identifiant de tâche. Vous pouvez ensuite utiliser cet identifiant pour récupérer les résultats de vérification de plagiat.
+
+```bash
+curl -X GET https://lacavernedeplaton.fr/api/science.php?id=123456
+```
+
+Résultat :
+
+résultat : 
+
+```bash
+{"google": "https://www.studocu.com/fr/document/ecole-internationale-bilingue-section-etoile/philosophie/sequence-2-la-liberte-conduit-elle-au-bonheur/90421849", "IA": 0}
+```
+
+### Gestion des erreurs
+- Si aucune donnée n'est fournie pour la vérification du plagiat, l'API renvoie un formulaire HTML pour soumettre des données.
+- Si un identifiant de tâche invalide est fourni pour récupérer les résultats, l'API renvoie une réponse vide.
