@@ -17,3 +17,8 @@ Le script python en exemple prend une [phrase comme argument ici](https://github
 ![](https://i.imgur.com/rJLXlIo.png)
 
 Le script python utilise [NoDriver](https://github.com/UltrafunkAmsterdam/nodriver) pour pouvoir afficher la page de ZeroGPT et automatiser les tâches d'appuyer sur le bouton, écrire le texte, récupérer le % affiché.
+
+
+# TODO 
+
+- [ ] En faire une API via Sreamlit ou ce genre de chose ?
